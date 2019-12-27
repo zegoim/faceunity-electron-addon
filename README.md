@@ -108,7 +108,13 @@ ZegoVideoFilterDemo.updateBeautyLevel(10);
 https://github.com/zegoim/zego-electron-quick-start/tree/fu_beauty
 
 
+7. 获取FaceUnity license
 
+1、拨打电话 0571-89774660
+
+2、发送邮件至 marketing@faceunity.com 进行咨询。
+
+8. 资源文件[v3.bundle](https://github.com/zegoim/faceunity-electron-addon/tree/master/sdk/fusdk/assets), [face_beautification.bundle](https://github.com/zegoim/faceunity-electron-addon/tree/master/sdk/fusdk/assets)
 
 
 
