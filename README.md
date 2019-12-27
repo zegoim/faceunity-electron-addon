@@ -1,4 +1,6 @@
 
+本工程为ZEGO FaceUnity 的美颜插件工程，使用本工程编译出来的插件，在结合ZEGO Electron SDK使用，即可在Electron 平台使用美颜功能。
+
 
 注：需要客户先了解基础的nodejs扩展开发环境配置 
 
