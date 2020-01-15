@@ -142,7 +142,7 @@ namespace ZEGO
             {
                 UpdateBeautyParamIfNeeded();
 
-                fuRenderItemsEx2(FU_FORMAT_RGBA_BUFFER, reinterpret_cast<int *>(data), FU_FORMAT_RGBA_BUFFER, reinterpret_cast<int *>(data), frame_w, frame_h, frame_id_++, bundle_handles_.data(), bundle_handles_.size(), NAMA_RENDER_FEATURE_FULL, NULL);
+                fuRenderItemsEx2(FU_FORMAT_BGRA_BUFFER, reinterpret_cast<int *>(data), FU_FORMAT_BGRA_BUFFER, reinterpret_cast<int *>(data), frame_w, frame_h, frame_id_++, bundle_handles_.data(), bundle_handles_.size(), NAMA_RENDER_FEATURE_FULL, NULL);
             }
         }
 
