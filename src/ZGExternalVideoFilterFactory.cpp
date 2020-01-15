@@ -1,4 +1,4 @@
-ï»¿#include "ZGExternalVideoFilterFactory.h"
+#include "ZGExternalVideoFilterFactory.h"
 
 #include <iostream>
 
@@ -35,7 +35,7 @@ namespace ZEGO
                 filter_data_list_.push_back(std::move(fb));
             }
 
-            // ç¾Žé¢œæŽ§åˆ¶
+            // ÃÀÑÕ¿ØÖÆ
             filter_process_ = std::shared_ptr<VideoFilterProcessBase>(new FuBeautifyFilter());
 
         }
@@ -83,9 +83,19 @@ namespace ZEGO
 
             beauty_process_thread_have_start_ = true;
 
-            // ç¾Žé¢œå¤„ç†çº¿ç¨‹
+            // ÃÀÑÕ´¦ÀíÏß³Ì
             process_thread_ = std::thread(&ZGExternalVideoFilterFactory::BeautifyProcess, this);
 
+        }
+
+        bool ZGExternalVideoFilterFactory::SetParameter(std::string parameter)
+        {
+            ZGENTER_FUN_LOG;
+            if (filter_process_ != nullptr)
+            {
+                return filter_process_->SetParameter(parameter.c_str());
+            }
+            return false;
         }
 
         AVE::VideoFilter* ZGExternalVideoFilterFactory::Create()
@@ -117,7 +127,7 @@ namespace ZEGO
             JSMessageLoopInstance()->PostAsyncEventMsg(event_info);
         }
 
-        // æ»¤é•œå¯åŠ¨åˆå§‹åŒ–
+        // ÂË¾µÆô¶¯³õÊ¼»¯
         void ZGExternalVideoFilterFactory::AllocateAndStart(Client* client)
         {
             ZGENTER_FUN_LOG;
@@ -140,30 +150,30 @@ namespace ZEGO
             }
         }
 
-        // sdk å›žè°ƒç¬¬1æ­¥ï¼Œ è¯·æ±‚bufferç±»åž‹
+        // sdk »Øµ÷µÚ1²½£¬ ÇëÇóbufferÀàÐÍ
         AVE::VideoBufferType ZGExternalVideoFilterFactory::SupportBufferType()
         {
             //ZGENTER_FUN_LOG;
 
-            // rgb å¸§å¤§å°
+            // rgb Ö¡´óÐ¡
             // rgb frame_len = w * h * 4
              cal_frame_factor_ = 4;
              return  AVE::BUFFER_TYPE_MEM;
 
-            // yuvå¸§å¤§å°
+            // yuvÖ¡´óÐ¡
             // yuv i420 frame_len = w * h * 1.5
             //cal_frame_factor_ = 1.5f;
             //return AVE::BUFFER_TYPE_ASYNC_I420_MEM;
         }
 
-        // sdk å›žè°ƒç¬¬2æ­¥ï¼Œè¯·æ±‚èŽ·å–æ“ä½œæŽ¥å£
+        // sdk »Øµ÷µÚ2²½£¬ÇëÇó»ñÈ¡²Ù×÷½Ó¿Ú
         void* ZGExternalVideoFilterFactory::GetInterface()
         {
             //ZGENTER_FUN_LOG;
             return (AVE::VideoBufferPool*)this;
         }
 
-        // sdk å›žè°ƒç¬¬3æ­¥ï¼Œç»™sdkä¸€ä¸ªç´¢å¼•å·ï¼Œsdkä¸‹ä¸€æ­¥ä½¿ç”¨è¿™ä¸ªç´¢å¼•æ¥å–bufferåœ°å€ï¼Œå‡†å¤‡æ‹·è´æ•°æ®åˆ°è¯¥åœ°å€
+        // sdk »Øµ÷µÚ3²½£¬¸øsdkÒ»¸öË÷ÒýºÅ£¬sdkÏÂÒ»²½Ê¹ÓÃÕâ¸öË÷ÒýÀ´È¡bufferµØÖ·£¬×¼±¸¿½±´Êý¾Ýµ½¸ÃµØÖ·
         int ZGExternalVideoFilterFactory::DequeueInputBuffer(int width, int height, int stride)
         {
             //ZGENTER_FUN_LOG;
@@ -206,7 +216,7 @@ namespace ZEGO
             return write_index_;
         }
 
-        // sdk å›žè°ƒç¬¬4æ­¥ï¼Œsdké€šè¿‡ç´¢å¼•ï¼Œå–bufferåœ°å€ï¼Œsdkä¼šæ‹·è´æ•°æ®åˆ°æä¾›çš„åœ°å€ä¸Š
+        // sdk »Øµ÷µÚ4²½£¬sdkÍ¨¹ýË÷Òý£¬È¡bufferµØÖ·£¬sdk»á¿½±´Êý¾Ýµ½Ìá¹©µÄµØÖ·ÉÏ
         void* ZGExternalVideoFilterFactory::GetInputBuffer(int index)
         {
             //ZGENTER_FUN_LOG;
@@ -220,7 +230,7 @@ namespace ZEGO
             return filter_data_list_[write_index_]->data_;
         }
 
-        // sdk å›žè°ƒç¬¬5æ­¥ï¼Œsdkå·²ç»æ‹·è´æ•°æ®åˆ°æŒ‡å®šåœ°å€å®Œæ¯•ï¼Œå¯ä»¥æ»¤é•œå¤„ç†è¯¥buffer
+        // sdk »Øµ÷µÚ5²½£¬sdkÒÑ¾­¿½±´Êý¾Ýµ½Ö¸¶¨µØÖ·Íê±Ï£¬¿ÉÒÔÂË¾µ´¦Àí¸Ãbuffer
         void ZGExternalVideoFilterFactory::QueueInputBuffer(int index, int width, int height, int stride, unsigned long long timestamp_100n)
         {
             //ZGENTER_FUN_LOG;
@@ -249,7 +259,7 @@ namespace ZEGO
         }
 
 
-        // æ»¤é•œå¤„ç†å‡½æ•°
+        // ÂË¾µ´¦Àíº¯Êý
         void ZGExternalVideoFilterFactory::BeautifyProcess()
         {
             ZGENTER_FUN_LOG;
@@ -273,13 +283,13 @@ namespace ZEGO
                     {
                         unsigned char* src_data = filter_data_list_[read_index_]->data_;
 
-                        // æ»¤é•œå¤„ç†å›¾åƒæ•°æ®
+                        // ÂË¾µ´¦ÀíÍ¼ÏñÊý¾Ý
                         if (enable_beautify_ && filter_process_ != nullptr)
                         {
                             filter_process_->FilterProcessRGBAData(filter_data_list_[read_index_]->data_, filter_data_list_[read_index_]->len_, filter_data_list_[read_index_]->width_, filter_data_list_[read_index_]->height_);
                         }
 
-                        // æ»¤é•œå¤„ç†å®Œæ¯•çš„è§†é¢‘æ•°æ®å†å¡žåˆ°sdk
+                        // ÂË¾µ´¦ÀíÍê±ÏµÄÊÓÆµÊý¾ÝÔÙÈûµ½sdk
                         {
                             VideoBufferPool* pool = (VideoBufferPool*)client_->GetInterface();
                             int index = pool->DequeueInputBuffer(filter_data_list_[read_index_]->width_, filter_data_list_[read_index_]->height_, filter_data_list_[read_index_]->stride_);

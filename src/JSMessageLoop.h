@@ -1,7 +1,7 @@
 //
 // NodeMessageLoop.h
 //
-// Copyright 2018å¹´ Zego. All rights reserved.
+// Copyright 2018Äê Zego. All rights reserved.
 //
 
 #ifndef NodeMessageLoop_h__
@@ -21,7 +21,7 @@ namespace ZEGO
 
         typedef struct EventMsgInfo
         {
-            // åœ¨ä»»åŠ¡çº¿ç¨‹ä¸­å®šä¹‰ï¼Œåœ¨uväº‹ä»¶å¾ªç¯ä¸­è°ƒç”¨
+            // ÔÚÈÎÎñÏß³ÌÖĞ¶¨Òå£¬ÔÚuvÊÂ¼şÑ­»·ÖĞµ÷ÓÃ
             std::function<void()> get_data_and_notify_node_fun;
 
         } EventMsgInfo;

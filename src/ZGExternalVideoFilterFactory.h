@@ -1,7 +1,7 @@
-﻿//
+
 // ZGExternalVideoFilterFactory.h
 //
-// Copyright 2019年 Zego. All rights reserved.
+// Copyright 2019�? Zego. All rights reserved.
 // 
 
 #ifndef ZGExternalFilterDemo_h__
@@ -65,13 +65,13 @@ namespace ZEGO
 
         public:
 
-            // 是否启用美颜滤镜
             void EnableBeauty(bool enable);
 
-            // 更新美颜滤镜等级
             bool UpdateBeautyLevel(int level);
 
             void StartBeautyProcess();
+
+            bool SetParameter(std::string parameter);
 
         protected:
 
@@ -109,7 +109,7 @@ namespace ZEGO
 
             const int MAX_FILTER_FRAME_COUNT = 2;
 
-            std::atomic<int> pending_count_ = 0;
+            std::atomic<int> pending_count_ = {0};
 
             std::atomic<bool> is_exit_ = {false};
 

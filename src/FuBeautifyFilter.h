@@ -7,6 +7,7 @@
 #define FUBeautifyFilter_h__
 
 #include <vector>
+#include <string>
 
 #include "VideoFilterProcessBase.h"
 
@@ -22,6 +23,13 @@ namespace ZEGO
 {
     namespace VIDEO_BEAUTY_FILTER
     {
+        typedef struct FaceUnityBundle {
+            std::string bundlePath = "";
+            std::string bundleName = "";            
+            std::string options = "";
+            bool need_update = false;
+            int bundle_handle = 0;
+        }FaceUnityBundle;
 
         // fu美颜接口实现
         class FuBeautifyFilter : public VideoFilterProcessBase
@@ -43,6 +51,8 @@ namespace ZEGO
 
             virtual void Release() override;
 
+            virtual bool SetParameter(const char *param) override;
+
         protected:
 
             bool InitOpenGL();
@@ -51,16 +61,26 @@ namespace ZEGO
 
             bool LoadFuResource();
 
+            void UpdateBeautyParamIfNeeded();
+
             bool inited_ = false;
 
             int frame_id_ = 0;
 
-            int beauty_handles_ = 0;
+            int beauty_handle_ = 0;
 
-            std::vector<int> handles_;
+            std::vector<int> bundle_handles_;
 
+            std::vector<FaceUnityBundle> face_unity_bundles_;
+
+            bool need_load_bundles_ = false;
+
+            bool need_update_bundles_ = false;
+
+            
+#ifdef WIN32
             HGLRC hglrc_ = nullptr;
-
+#endif
         };
 
     }

@@ -1,4 +1,4 @@
-﻿#include "VideoFilterProcessBase.h"
+#include "VideoFilterProcessBase.h"
 
 namespace ZEGO
 {

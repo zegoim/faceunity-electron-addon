@@ -1,7 +1,7 @@
-ï»¿//
+//
 // VideoFilterProcessBase.h
 //
-// Copyright 2019å¹´ Zego. All rights reserved.
+// Copyright 2019Äê Zego. All rights reserved.
 // 
 
 #ifndef VideoFilterProcessBase_h__
@@ -11,27 +11,29 @@ namespace ZEGO
 {
     namespace VIDEO_BEAUTY_FILTER
     {
-        // è§†é¢‘æ»¤é•œå¤„ç†ç±»
+        // ÊÓÆµÂË¾µ´¦ÀíÀà
         class VideoFilterProcessBase
         {
         public:
             VideoFilterProcessBase();
             virtual ~VideoFilterProcessBase();
 
-            // åˆå§‹åŒ–æ»¤é•œ
+            // ³õÊ¼»¯ÂË¾µ
             virtual bool InitFilter(){ return false;};
 
-            // æ»¤é•œå¤„ç†YUV I420 è§†é¢‘æ•°æ®
+            // ÂË¾µ´¦ÀíYUV I420 ÊÓÆµÊı¾İ
             virtual void FilterProcessI420Data(unsigned char * data, int frame_len, int frame_w, int frame_h) {}
 
-            // æ»¤é•œå¤„ç†RGBæ•°æ®
+            // ÂË¾µ´¦ÀíRGBÊı¾İ
             virtual void FilterProcessRGBAData(unsigned char * data, int frame_len, int frame_w, int frame_h) {}
 
-            // åˆ·æ–°æ»¤é•œå¤„ç†ç­‰çº§ï¼Œä¾‹å¦‚ç¾é¢œç­‰çº§
+            // Ë¢ĞÂÂË¾µ´¦ÀíµÈ¼¶£¬ÀıÈçÃÀÑÕµÈ¼¶
             virtual bool UpdateFilterLevel(int level){ return false; }
 
             virtual void Release() {}
 
+            virtual bool SetParameter(const char *param) { return false;};
+ 
         };
     }
 }

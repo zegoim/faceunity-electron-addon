@@ -1,4 +1,4 @@
-ï»¿#include <nan.h>
+#include <nan.h>
 #include <iostream>
 #include <string>
 
@@ -15,7 +15,7 @@ std::string GetNodeStrParam(Nan::NAN_METHOD_ARGS_TYPE info, int index)
     return str;
 }
 
-// åˆå§‹åŒ– Fu SDK é…ç½®
+// ³õÊ¼»¯ Fu SDK ÅäÖÃ
 NAN_METHOD(InitFuBeautyConfig)
 {
     if (info.Length() < 4)
@@ -68,7 +68,7 @@ NAN_METHOD(InitFuBeautyConfig)
 }
 
 
-// å®šä¹‰å‡½æ•° è·å–ä¸€ä¸ªæ»¤é•œå·¥å‚
+// ¶¨Òåº¯Êı »ñÈ¡Ò»¸öÂË¾µ¹¤³§
 NAN_METHOD(GetVideoFilterFactory) 
 {
     if (FactoryInstance == nullptr) 
@@ -82,7 +82,7 @@ NAN_METHOD(GetVideoFilterFactory)
     info.GetReturnValue().Set(Nan::New<v8::Number>(reinterpret_cast<int64_t>(factoryBase)));
 }
 
-// å®šä¹‰å‡½æ•° æ˜¯å¦å¯ç”¨ç¾é¢œæ»¤é•œ
+// ¶¨Òåº¯Êı ÊÇ·ñÆôÓÃÃÀÑÕÂË¾µ
 NAN_METHOD(EnableBeauty) 
 {
     if (FactoryInstance == nullptr) 
@@ -97,7 +97,7 @@ NAN_METHOD(EnableBeauty)
     info.GetReturnValue().Set(true);
 }
 
-// å®šä¹‰å‡½æ•° æ›´æ–°ç¾é¢œæ»¤é•œç­‰çº§
+// ¶¨Òåº¯Êı ¸üĞÂÃÀÑÕÂË¾µµÈ¼¶
 NAN_METHOD(UpdateBeautyLevel) 
 {
     if (FactoryInstance == nullptr) 
@@ -110,8 +110,22 @@ NAN_METHOD(UpdateBeautyLevel)
     info.GetReturnValue().Set(ret);
 }
 
+NAN_METHOD(SetParameter)
+{
+    if (FactoryInstance == nullptr)
+    {
+        info.GetReturnValue().Set(false);
+        return;
+    }
+    
+    std::string  parameter_jason_str = GetNodeStrParam(info, 0);
 
-// å®šä¹‰æ¨¡å—åˆå§‹åŒ–å‡½æ•°: å‚æ•°targetç›¸å½“äºmodule.export
+    bool ret = FactoryInstance->SetParameter(parameter_jason_str);
+    info.GetReturnValue().Set(ret);
+}
+
+
+// ¶¨ÒåÄ£¿é³õÊ¼»¯º¯Êı: ²ÎÊıtargetÏàµ±ÓÚmodule.export
 NAN_MODULE_INIT(ZegoVideoFilter_Init) 
 {
 #ifdef PLUGIN_VERSION
@@ -120,13 +134,14 @@ NAN_MODULE_INIT(ZegoVideoFilter_Init)
 
 #endif
     
-    // å¾€targetå³module.exportä¸ŠæŒ‚ä¸œè¥¿
+    // Íùtarget¼´module.exportÉÏ¹Ò¶«Î÷
     Nan::SetMethod(target, "getVideoFilterFactory", GetVideoFilterFactory);
     Nan::SetMethod(target, "enableBeauty", EnableBeauty);
     Nan::SetMethod(target, "updateBeautyLevel", UpdateBeautyLevel);
     Nan::SetMethod(target, "initFuBeautyConfig", InitFuBeautyConfig);
+    Nan::SetMethod(target, "setParameter", SetParameter);
 }
 
 
-// å‘Šè¯‰nodejsæ¨¡å—åˆå§‹åŒ–å‡½æ•°åœ¨å“ªé‡Œ
+// ¸æËßnodejsÄ£¿é³õÊ¼»¯º¯ÊıÔÚÄÄÀï
 NODE_MODULE(ZegoVideoFilter, ZegoVideoFilter_Init)
