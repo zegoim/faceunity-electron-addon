@@ -1,6 +1,8 @@
 #include "ZGExternalVideoFilterFactory.h"
 
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 #include "nan.h"
 
@@ -46,9 +48,6 @@ namespace ZEGO
             ZGENTER_FUN_LOG;
 
             is_exit_ = true;
-
-            have_task_in_queue_ = true;
-            task_condition_var_.notify_all();
 
             if (process_thread_.joinable())
             {
@@ -251,9 +250,6 @@ namespace ZEGO
             write_index_ = (write_index_ + 1) % MAX_FILTER_FRAME_COUNT;
 
             pending_count_++;
-    
-            have_task_in_queue_ = true;
-            task_condition_var_.notify_all();
 
             //ZGLog("pending_count_++, pending_count_ = %d", pending_count_);
         }
@@ -274,10 +270,6 @@ namespace ZEGO
 
                 while (!is_exit_)
                 {
-                    {
-                        std::unique_lock<std::mutex> lock(task_condition_var_mutex_);
-                        task_condition_var_.wait(lock, [&] {return have_task_in_queue_.load(); });
-                    }
 
                     while (pending_count_ > 0)
                     {
@@ -315,6 +307,7 @@ namespace ZEGO
                             break;
                         }
                     }
+                    std::this_thread::sleep_for(std::chrono::milliseconds(20));
                 }
 
                 filter_process_->Release();

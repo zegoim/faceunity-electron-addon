@@ -132,14 +132,6 @@ namespace ZEGO
             std::thread process_thread_;
 
             std::atomic<bool> have_start_ = {false};
-    
-            std::condition_variable task_condition_var_;
-    
-            std::mutex task_condition_var_mutex_;
-
-            std::atomic<bool> have_task_in_queue_ = {false};
-
-
 
         };
 
