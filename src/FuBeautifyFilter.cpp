@@ -74,24 +74,24 @@ namespace ZEGO
             return true;
         }
 
-        bool FuBeautifyFilter::InitFilter()
+        int FuBeautifyFilter::InitFilter()
         {
             if (!InitOpenGL())
             {
                 inited_ = false;
-                return false;
+                return -2;
             }
 
             if (!InitFuSdk())
             {
                 inited_ = false;
-                return false;
+                return -3;
             }
 
             if (!LoadFuResource())
             {
                 inited_ = false;
-                return false;
+                return -4;
             }
 
             // 设置默认美颜等级
@@ -99,7 +99,7 @@ namespace ZEGO
 
             inited_ = true;
 
-            return true;
+            return 0;
         }
 
         void FuBeautifyFilter::FilterProcessI420Data(unsigned char *data, int frame_len, int frame_w, int frame_h)

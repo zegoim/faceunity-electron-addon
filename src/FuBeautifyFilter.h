@@ -39,7 +39,7 @@ namespace ZEGO
             ~FuBeautifyFilter();
 
             // 初始化美颜滤镜
-            virtual bool InitFilter() override;
+            virtual int InitFilter() override;
 
             // 美颜处理YUV I420数据
             virtual void FilterProcessI420Data(unsigned char * data, int frame_len, int frame_w, int frame_h) override;

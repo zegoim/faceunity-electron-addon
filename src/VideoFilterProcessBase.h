@@ -19,7 +19,7 @@ namespace ZEGO
             virtual ~VideoFilterProcessBase();
 
             // 初始化滤镜
-            virtual bool InitFilter(){ return false;};
+            virtual int InitFilter(){ return -1;};
 
             // 滤镜处理YUV I420 视频数据
             virtual void FilterProcessI420Data(unsigned char * data, int frame_len, int frame_w, int frame_h) {}

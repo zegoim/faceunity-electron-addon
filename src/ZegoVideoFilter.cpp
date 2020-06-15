@@ -6,6 +6,40 @@
 #include "GlobalConfig.h"
 #include "JsCallBackInfo.h"
 
+#ifdef WIN32
+
+#include <comutil.h>  
+#include <chrono>
+#include <locale>
+#include <codecvt>
+#include <memory>
+
+#pragma comment(lib, "comsuppw.lib")
+
+int UTF8ToGBK(const char* str, std::string& out)
+{
+    WCHAR *strSrc;
+    char *szRes;
+    int len=0;
+    
+    int i = MultiByteToWideChar(CP_UTF8, 0, str, -1, NULL, 0);
+    strSrc = new WCHAR[i + 1];
+    MultiByteToWideChar(CP_UTF8, 0, str, -1, strSrc, i);
+
+    i = WideCharToMultiByte(CP_ACP, 0, strSrc, -1, NULL, 0, NULL, NULL);
+    szRes = new char[i + 1];
+    WideCharToMultiByte(CP_ACP, 0, strSrc, -1, szRes, i, NULL, NULL);
+
+    out = szRes;
+
+    delete[]strSrc;
+    delete[]szRes;
+
+    return len;
+}
+
+#endif
+
 ZEGO::VIDEO_BEAUTY_FILTER::ZGExternalVideoFilterFactory *FactoryInstance = nullptr;
 
 std::string GetNodeStrParam(Nan::NAN_METHOD_ARGS_TYPE info, int index)
@@ -41,6 +75,20 @@ NAN_METHOD(InitFuBeautyConfig)
 
     std::string v3_bundle_path = GetNodeStrParam(info, 1);
     std::string face_beautification_bundle_path = GetNodeStrParam(info, 2);
+	
+#ifdef WIN32
+
+    std::string v3_bundle_path_gbk;
+    std::string face_beautification_bundle_path_gbk;
+	UTF8ToGBK(v3_bundle_path.c_str(), v3_bundle_path_gbk);
+	UTF8ToGBK(face_beautification_bundle_path.c_str(), face_beautification_bundle_path_gbk);
+	
+	v3_bundle_path = v3_bundle_path_gbk;
+	face_beautification_bundle_path = face_beautification_bundle_path_gbk;
+	
+	//printf("%s, %s\n",v3_bundle_path.c_str(), face_beautification_bundle_path.c_str());
+
+#endif
 
     ZEGO::VIDEO_BEAUTY_FILTER::GlobalConfigInstance()->init_cb_.js_cb = std::shared_ptr<Nan::Callback>(new Nan::Callback(info[3].As<v8::Function>()));
     ZEGO::VIDEO_BEAUTY_FILTER::GlobalConfigInstance()->init_cb_.iso = info.GetIsolate();

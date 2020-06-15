@@ -80,6 +80,9 @@ zegoClient.setVideoFilterFactory({factory: fac})
 // 
 let init_fu_sdk_ret = ZegoVideoFilterDemo.initFuBeautyConfig([此处填写FaceUnity的license，形式一个数组], "此处填写FaceUnity 的 v3.bundle的文件路径", "此处填写FaceUnity 的 face_beautification.bundle的文件路径", function(rs){
       console.log(rs)
+	  // -2 初始化openGL失败
+	  // -3 初始化fu sdk 失败，通常可能是FaceUnity 的license填得不对
+	  // -4 加载fu资源失败，通常可能是设置的FaceUnity 的资源路径有问题
       if(rs.error_code == 0)
       {
           ZegoVideoFilterDemo.enableBeauty(true);

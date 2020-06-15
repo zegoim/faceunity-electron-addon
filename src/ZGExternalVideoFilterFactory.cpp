@@ -261,8 +261,8 @@ namespace ZEGO
             ZGENTER_FUN_LOG;
 
             //std::cout << "ZGExternalVideoFilterFactory::BeautifyProcess";
-
-            if (filter_process_->InitFilter())
+			int init_filter_ret = filter_process_->InitFilter();
+            if (init_filter_ret == 0)
             {
                 CallToJSFun(GlobalConfigInstance()->init_cb_, 0);
 
@@ -314,9 +314,8 @@ namespace ZEGO
 
             }
             else {
-                CallToJSFun(GlobalConfigInstance()->init_cb_, -1);
+                CallToJSFun(GlobalConfigInstance()->init_cb_, init_filter_ret);
             }
-
 
             have_start_ = false;
 
