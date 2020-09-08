@@ -118,6 +118,8 @@ namespace ZEGO
             vector<std::unique_ptr<VideoFilterBuffer> > filter_data_list_;
             
             Client* client_ = nullptr;
+
+            std::mutex client_mutex_;
             
             int write_index_ = 0;
             

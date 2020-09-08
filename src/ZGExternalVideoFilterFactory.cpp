@@ -19,6 +19,15 @@ namespace ZEGO
         {
 //             printf(format);
 //             printf("\n");
+#ifdef WIN32
+            char log_buf[1024] = { 0 };
+            va_list la;
+            va_start(la, format);
+            vsprintf_s(log_buf, format, la);
+            va_end(la);
+
+            OutputDebugStringA(log_buf);
+#endif
         }
 
         #define ZGENTER_FUN_LOG ZGLog("==>%s",__FUNCTION__);
@@ -130,8 +139,11 @@ namespace ZEGO
         void ZGExternalVideoFilterFactory::AllocateAndStart(Client* client)
         {
             ZGENTER_FUN_LOG;
-            
-            client_ = client;
+            {
+                std::lock_guard<std::mutex> lock(client_mutex_);
+                client_ = client;
+            }
+
             write_index_ = 0;
             read_index_ = 0;
             pending_count_ = 0;
@@ -141,7 +153,8 @@ namespace ZEGO
         void ZGExternalVideoFilterFactory::StopAndDeAllocate()
         {
             ZGENTER_FUN_LOG;
-    
+   
+            std::lock_guard<std::mutex> lock(client_mutex_);
             if (client_ != nullptr)
             {
                 client_->Destroy();
@@ -283,19 +296,23 @@ namespace ZEGO
 
                         // 滤镜处理完毕的视频数据再塞到sdk
                         {
-                            VideoBufferPool* pool = (VideoBufferPool*)client_->GetInterface();
-                            int index = pool->DequeueInputBuffer(filter_data_list_[read_index_]->width_, filter_data_list_[read_index_]->height_, filter_data_list_[read_index_]->stride_);
-
-                            if (index >= 0)
+                            std::lock_guard<std::mutex> lock(client_mutex_);
+                            if(client_)
                             {
-                                unsigned char* dst = (unsigned char*)pool->GetInputBuffer(index);
+                                VideoBufferPool* pool = (VideoBufferPool*)client_->GetInterface();
+                                int index = pool->DequeueInputBuffer(filter_data_list_[read_index_]->width_, filter_data_list_[read_index_]->height_, filter_data_list_[read_index_]->stride_);
 
-                                memcpy(dst, src_data, filter_data_list_[read_index_]->width_*filter_data_list_[read_index_]->height_ * cal_frame_factor_);
+                                if (index >= 0)
+                                {
+                                    unsigned char* dst = (unsigned char*)pool->GetInputBuffer(index);
 
-                                pool->QueueInputBuffer(index, filter_data_list_[read_index_]->width_, filter_data_list_[read_index_]->height_, filter_data_list_[read_index_]->stride_, filter_data_list_[read_index_]->timestamp_100n_);
+                                    memcpy(dst, src_data, filter_data_list_[read_index_]->width_*filter_data_list_[read_index_]->height_ * cal_frame_factor_);
 
-                                //DWORD elapse_time = GetTickCount() - filter_data_list_[read_index_]->cur_time;
-                                //ZGLog("elapse time = %d", elapse_time);
+                                    pool->QueueInputBuffer(index, filter_data_list_[read_index_]->width_, filter_data_list_[read_index_]->height_, filter_data_list_[read_index_]->stride_, filter_data_list_[read_index_]->timestamp_100n_);
+
+                                    //DWORD elapse_time = GetTickCount() - filter_data_list_[read_index_]->cur_time;
+                                    //ZGLog("elapse time = %d", elapse_time);
+                                }
                             }
                         }
 
@@ -329,7 +346,11 @@ namespace ZEGO
         {
             ZGENTER_FUN_LOG;
             //ZGLog("ZGExternalVideoFilterFactory::Destroy");
-            client_ = nullptr;
+            {
+                std::lock_guard<std::mutex> lock(client_mutex_);
+                client_ = nullptr;
+            }
+            
             write_index_ = 0;
             read_index_ = 0;
             pending_count_ = 0;    
