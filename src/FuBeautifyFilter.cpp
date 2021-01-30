@@ -94,12 +94,18 @@ namespace ZEGO
                 return -4;
             }
 
-            // 设置默认美颜等级
-            UpdateFilterLevel(5);
-
             inited_ = true;
 
-            return 0;
+            if(user_parameter_ != "")
+            {
+                SetParameter(user_parameter_.c_str());
+                printf("init set SetParameter : %s\n", user_parameter_.c_str());
+            }else{
+                // 设置默认美颜等级
+                UpdateFilterLevel(5);
+            }
+
+            return true;
         }
 
         void FuBeautifyFilter::FilterProcessI420Data(unsigned char *data, int frame_len, int frame_w, int frame_h)
@@ -114,6 +120,8 @@ namespace ZEGO
             {
                 return false;
             }
+
+            //printf("== UpdateFilterLevel \n");
 
             // 肤色检测开关，0为关，1为开
             fuItemSetParamd(beauty_handle_, "skin_detect", 1);
@@ -277,7 +285,6 @@ namespace ZEGO
 
         bool FuBeautifyFilter::InitFuSdk()
         {
-
             printf("fu version = %s \n", fuGetVersion());
 
             // 初始化fu sdk
@@ -417,6 +424,14 @@ namespace ZEGO
 
         bool FuBeautifyFilter::SetParameter(const char *param)
         {
+            // printf("== SetParameter \n");
+
+            if(!inited_)
+            {
+                user_parameter_ = param == nullptr ? "":param;
+                return true;
+            }
+
             Document d;
             d.Parse(param);
 
@@ -493,6 +508,7 @@ namespace ZEGO
                         updateBundleData["bundleOptions"].Accept(writer);
                         t->options = sb.GetString();
                         t->need_update = true;
+                        // printf("===save update param\n");
                     }
                 }
 

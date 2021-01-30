@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <string>
+#include <atomic>
 
 #include "VideoFilterProcessBase.h"
 
@@ -63,7 +64,7 @@ namespace ZEGO
 
             void UpdateBeautyParamIfNeeded();
 
-            bool inited_ = false;
+            std::atomic<bool> inited_ = {false};
 
             int frame_id_ = 0;
 
@@ -76,6 +77,10 @@ namespace ZEGO
             bool need_load_bundles_ = false;
 
             bool need_update_bundles_ = false;
+
+            std::atomic<bool> user_parameter_set_ = {false};
+
+            std::string user_parameter_;
 
             
 #ifdef WIN32
